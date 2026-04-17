@@ -58,3 +58,6 @@ src/
 ## Conclusion
 This project successfully demonstrates a backend system for managing productivity and focus sessions using Java and database integration.
 This is a Maven-based Java backend project.
+
+## Author
+Sapna Sikarwar
