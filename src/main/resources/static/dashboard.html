@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Productivity Detox</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="/css/main.css">
+    <style>
+        .nav-link.active {
+            color: #3b82f6;
+            font-weight: bold;
+            background-color: #eff6ff; /* blue-50 */
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 via-white to-purple-100 text-gray-800 min-h-screen font-sans transition-all duration-300">
+    
+    <!-- Sidebar -->
+    <div class="fixed left-0 top-0 h-full w-64 bg-white shadow-lg p-5 z-50 overflow-y-auto">
+        <h2 class="text-xl font-bold mb-6 text-blue-600 flex items-center gap-2">
+            <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+            Productivity App
+        </h2>
+        <ul class="space-y-4">
+            <li><a href="dashboard.html" class="nav-link active block p-3 rounded-lg text-gray-700 transition">Dashboard</a></li>
+            <li><a href="tasks.html" class="nav-link block p-3 rounded-lg text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition">Tasks</a></li>
+            <li><a href="analytics.html" class="nav-link block p-3 rounded-lg text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition">Analytics</a></li>
+        </ul>
+        <div class="mt-8">
+            <button id="logout-btn" class="w-full bg-white border-2 border-gray-200 hover:border-red-400 hover:text-red-500 hover:bg-red-50 text-gray-600 px-5 py-2 rounded-xl font-bold transition-all duration-300 shadow-sm" style="display:none;">Logout</button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="ml-64 p-6 max-w-6xl mx-auto space-y-6">
+
+        <div class="mb-6 flex justify-between items-start">
+            <div>
+                <h1 id="greetingText" class="text-2xl font-bold text-gray-700"></h1>
+                <p id="motivationText" class="text-gray-500">
+                    Stay focused and make today productive 🚀
+                </p>
+            </div>
+            <button onclick="logoutUser()"
+              class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition">
+              Logout
+            </button>
+        </div>
+        
+        <!-- Daily Goal Tracking -->
+        <div class="bg-gradient-to-r from-indigo-500 to-purple-500 text-white p-5 rounded-2xl shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 mb-6 bg-white/80 backdrop-blur-md">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h3 class="text-lg font-semibold">🎯 Daily Goal</h3>
+                    <p class="text-sm opacity-90">
+                    Stay consistent and complete your focus target
+                    </p>
+                </div>
+                <div class="text-right">
+                    <p class="text-xl font-bold" id="goalDisplay">0 / 0 min</p>
+                    <input id="dailyGoal" type="number"
+                    placeholder="Set goal"
+                    class="mt-2 px-3 py-1 rounded-lg text-black w-28">
+                </div>
+            </div>
+            <div class="mt-4 w-full bg-white/30 h-2 rounded">
+                <div id="goalProgress" class="bg-white h-2 rounded transition-all duration-500" style="width: 0%"></div>
+            </div>
+        </div>
+
+        <!-- Top Stats Row -->
+        <div class="grid grid-cols-4 gap-6 mb-6">
+            <div class="bg-white/80 backdrop-blur-md p-6 rounded-2xl shadow-lg border border-gray-100 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 flex items-center gap-4">
+                <div class="w-12 h-12 flex items-center justify-center rounded-full bg-blue-100 shadow-inner text-blue-500">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                </div>
+                <div>
+                    <p class="text-gray-500 text-sm font-semibold uppercase tracking-wide">Focus Time</p>
+                    <p class="text-4xl font-extrabold text-blue-600 mt-1 drop-shadow-sm" id="stat-focus">0 min</p>
+                </div>
+            </div>
+            
+            <div class="bg-white/80 backdrop-blur-md p-6 rounded-2xl shadow-lg border border-gray-100 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 flex items-center gap-4">
+                <div class="w-12 h-12 flex items-center justify-center rounded-full bg-green-100 shadow-inner text-green-500 shrink-0">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                </div>
+                <div>
+                    <p class="text-gray-500 text-sm font-semibold uppercase tracking-wide">Focus Score</p>
+                    <div class="flex flex-wrap items-center gap-2 mt-1">
+                        <p class="text-4xl font-extrabold text-green-500 drop-shadow-sm leading-none" id="stat-score">0%</p>
+                        <div id="focusStatus" class="font-bold text-[10px] md:text-xs bg-gray-50 border px-2 py-1 rounded-lg text-gray-700 uppercase tracking-widest whitespace-nowrap"></div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="bg-white/80 backdrop-blur-md p-6 rounded-2xl shadow-lg border border-gray-100 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 flex items-center gap-4">
+                <div class="w-12 h-12 flex items-center justify-center rounded-full bg-purple-100 shadow-inner text-purple-500">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"></path></svg>
+                </div>
+                <div>
+                    <p class="text-gray-500 text-sm font-semibold uppercase tracking-wide">Points</p>
+                    <p class="text-4xl font-extrabold text-purple-600 mt-1 drop-shadow-sm" id="stat-points">0</p>
+                </div>
+            </div>
+            
+            <div class="bg-white/80 backdrop-blur-md p-6 rounded-2xl shadow-lg border border-gray-100 hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 flex items-center gap-4">
+                <div class="w-12 h-12 flex items-center justify-center rounded-full bg-orange-100 shadow-inner text-orange-500">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.879 16.121A3 3 0 1012.015 11L11 14H9c0 .768.293 1.536.879 2.121z"></path></svg>
+                </div>
+                <div>
+                    <p class="text-gray-500 text-sm font-semibold uppercase tracking-wide">Streak</p>
+                    <p class="text-4xl font-extrabold text-orange-500 mt-1 drop-shadow-sm" id="stat-streak">0 days</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- MAIN SECTION -->
+        <div class="grid grid-cols-2 gap-6 mt-10">
+            
+            <!-- LEFT: Timer -->
+            <div class="flex justify-center">
+                <div class="bg-white/90 backdrop-blur-lg rounded-3xl p-10 shadow-2xl w-[420px] text-center border border-gray-100">
+                    <h3 class="text-gray-500 mb-2">Current Task</h3>
+                    <h2 class="text-xl font-semibold mb-4" id="active-task-title">No task selected</h2>
+
+                    <!-- TIMER CIRCLE -->
+                    <div class="relative w-52 h-52 mx-auto mb-6">
+                        <svg class="w-full h-full transform -rotate-90">
+                            <defs>
+                                <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                                    <stop offset="0%" stop-color="#3b82f6" />
+                                    <stop offset="100%" stop-color="#8b5cf6" />
+                                </linearGradient>
+                            </defs>
+                            <circle cx="104" cy="104" r="90" stroke="#e5e7eb" stroke-width="10" fill="none" />
+                            <circle id="progressRing" cx="104" cy="104" r="90" stroke="url(#gradient)" stroke-width="10" fill="none" stroke-linecap="round" stroke-dasharray="565" stroke-dashoffset="565" style="transition: stroke-dashoffset 0.5s ease-in-out;" />
+                        </svg>
+                        <div class="absolute inset-0 flex items-center justify-center text-3xl font-bold text-blue-600">
+                            <span id="timer-display">00:00:00</span>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-center gap-4">
+                        <button id="btn-start" disabled class="bg-gradient-to-r from-blue-500 to-indigo-500 text-white px-6 py-2 rounded-xl shadow-lg hover:scale-105 transition disabled:opacity-50">
+                            Start
+                        </button>
+                        <button id="btn-stop" disabled class="bg-gradient-to-r from-red-400 to-pink-500 text-white px-6 py-2 rounded-xl shadow-lg hover:scale-105 transition disabled:opacity-50">
+                            Stop
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- RIGHT: Focus + Reminder -->
+            <div class="flex flex-col justify-center gap-6">
+                <!-- Focus Mode -->
+                <div class="bg-white/80 backdrop-blur-md p-5 rounded-2xl shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 flex items-center justify-between">
+                    <div>
+                        <h3 class="font-semibold">Focus Mode</h3>
+                        <p class="text-sm text-gray-500">Distraction-free full screen mode</p>
+                    </div>
+                    <input type="checkbox" id="focusModeToggle" class="w-6 h-6 rounded text-indigo-600">
+                </div>
+
+                <!-- Study Reminder -->
+                <div class="bg-white/80 backdrop-blur-md p-5 rounded-2xl shadow-lg hover:shadow-2xl hover:-translate-y-1 transition-all duration-300 flex justify-between items-center gap-4">
+                    <div class="flex items-center gap-4">
+                        <div class="w-10 h-10 flex items-center justify-center rounded-full bg-indigo-100 text-indigo-500 shadow-inner">⏱️</div>
+                        <div>
+                            <h3 class="font-semibold">Study Reminder</h3>
+                            <p id="reminderStatus" class="text-sm text-gray-500">Set your study time</p>
+                        </div>
+                    </div>
+                    <div class="flex gap-2">
+                        <input id="reminderTime" type="time" class="border rounded px-2 py-1 text-sm bg-white/50">
+                        <button id="setReminderBtn" class="bg-gradient-to-r from-indigo-500 to-purple-500 text-white px-4 py-1 rounded shadow-lg hover:scale-105 transition-all duration-300">
+                            Set
+                        </button>
+                    </div>
+                </div>
+
+                <div class="bg-white p-5 rounded-2xl shadow-md mt-6">
+                    <h3 class="text-lg font-semibold text-indigo-600 mb-3">
+                    📊 Today's Report
+                    </h3>
+                    <div id="dailyReportContent">
+                        <p class="text-sm text-gray-500 py-2">Loading...</p>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Modals and Popups -->
+    <div id="reminder-modal" class="hidden fixed inset-0 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center z-50 transition-opacity">
+        <div class="bg-white/90 backdrop-blur-xl p-10 rounded-3xl border border-white/50 max-w-sm w-full text-center shadow-2xl transform scale-100 transition-transform">
+            <div class="text-6xl mb-6 drop-shadow-md">⏰</div>
+            <h2 class="text-3xl font-extrabold text-blue-600 mb-3">Keep going!</h2>
+            <p class="text-gray-500 mb-8 text-lg font-medium">Your tasks are waiting for you. Dive back into focus mode.</p>
+            <button id="close-reminder" class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-4 px-6 rounded-2xl transition-all duration-300 transform hover:scale-105 active:scale-95 shadow-lg text-lg">Got it!</button>
+        </div>
+    </div>
+
+    <div id="reminderPopup" class="hidden fixed bottom-8 right-8 bg-blue-500 text-white px-8 py-5 rounded-2xl shadow-xl z-50 text-lg font-medium transition-all duration-500 animate-bounce flex items-center gap-4">
+      <span class="text-3xl drop-shadow-md">⏰</span>
+      <span>Time to study! Stay focused and continue your session.</span>
+    </div>
+
+    <div id="completionPopup" class="hidden fixed top-5 right-5 bg-green-500 text-white px-6 py-3 rounded-xl shadow-lg z-50 transition-opacity">
+      🎉 Task Completed! +100 Points
+    </div>
+
+    <div id="goalPopup" class="fixed inset-0 flex items-center justify-center bg-black/40 hidden z-[100]">
+
+  <div class="bg-white p-6 rounded-2xl shadow-xl text-center w-80">
+
+    <h2 class="text-xl font-bold text-green-600 mb-2">
+      🎉 Daily Goal Completed!
+    </h2>
+
+    <p class="text-gray-600 mb-4">
+      You reached your goal successfully 💪
+    </p>
+
+    <button onclick="closeGoalPopup()"
+      class="bg-green-500 text-white px-4 py-2 rounded-lg">
+      Awesome!
+    </button>
+
+  </div>
+
+</div>
+
+    <div id="distractionBox" class="hidden fixed inset-0 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center z-50 transition-opacity">
+        <div class="bg-white/90 backdrop-blur-xl p-8 rounded-3xl border border-white/50 max-w-sm w-full text-center shadow-2xl transform scale-100 transition-transform">
+            <div class="text-6xl mb-4 drop-shadow-md">🤔</div>
+            <h2 class="text-2xl font-extrabold text-gray-800 mb-3">Session Complete</h2>
+            <p class="text-gray-500 mb-6 text-lg font-medium">Did you get distracted during this session?</p>
+            <div class="flex gap-4 justify-center">
+                <button onclick="markDistracted(true)" class="flex-1 bg-red-400 hover:bg-red-500 text-white font-bold py-3 px-6 rounded-2xl transition-all shadow-md active:scale-95">Yes</button>
+                <button onclick="markDistracted(false)" class="flex-1 bg-green-400 hover:bg-green-500 text-white font-bold py-3 px-6 rounded-2xl transition-all shadow-md active:scale-95">No</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="focusModeScreen" class="hidden fixed inset-0 bg-white z-[100] h-screen flex flex-col items-center justify-center">
+        <h2 class="text-xl text-gray-500 mb-4">
+            Deep Work Mode Activated 🚀
+        </h2>
+        <div id="focusTimer" class="text-6xl font-bold text-blue-600 animate-pulse">
+            00:00:00
+        </div>
+        <button id="exitFocusMode" class="mt-8 bg-gradient-to-r from-red-400 to-pink-500 hover:opacity-90 text-white px-6 py-2 rounded-xl shadow-lg transition-all hover:scale-105 active:scale-95 font-bold">
+            Exit Focus Mode
+        </button>
+    </div>
+
+    <!-- Achievement Popup -->
+    <div id="achievementPopup" class="fixed inset-0 flex items-center justify-center bg-black/50 hidden z-50">
+      <div class="bg-white rounded-2xl shadow-2xl p-6 w-80 text-center animate-scaleIn">
+        <div class="text-4xl mb-2">🏆</div>
+        <h2 class="text-xl font-bold text-indigo-600 mb-1">
+          Achievement Unlocked
+        </h2>
+        <p id="badgeName" class="text-lg font-semibold text-gray-800 mb-2"></p>
+        <p id="badgeDesc" class="text-gray-500 text-sm mb-4"></p>
+        <button onclick="closeAchievementPopup()"
+          class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700">
+          Continue
+        </button>
+      </div>
+    </div>
+
+    <script src="/js/app.js"></script>
+</body>
+</html>

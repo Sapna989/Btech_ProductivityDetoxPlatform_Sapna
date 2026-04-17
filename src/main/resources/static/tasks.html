@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tasks - Productivity Detox</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="/css/main.css">
+    <style>
+        .nav-link.active {
+            color: #3b82f6;
+            font-weight: bold;
+            background-color: #eff6ff; /* blue-50 */
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 via-white to-purple-50 text-gray-800 min-h-screen font-sans">
+    
+    <!-- Sidebar -->
+    <div class="fixed left-0 top-0 h-full w-64 bg-white shadow-lg p-5 z-50 overflow-y-auto">
+        <h2 class="text-xl font-bold mb-6 text-blue-600 flex items-center gap-2">
+            <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+            Productivity App
+        </h2>
+        <ul class="space-y-4">
+            <li><a href="dashboard.html" class="nav-link block p-3 rounded-lg text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition">Dashboard</a></li>
+            <li><a href="tasks.html" class="nav-link active block p-3 rounded-lg text-gray-700 transition">Tasks</a></li>
+            <li><a href="analytics.html" class="nav-link block p-3 rounded-lg text-gray-700 hover:bg-blue-50 hover:text-blue-600 transition">Analytics</a></li>
+        </ul>
+        <div class="mt-8">
+            <button id="logout-btn" class="w-full bg-white border-2 border-gray-200 hover:border-red-400 hover:text-red-500 hover:bg-red-50 text-gray-600 px-5 py-2 rounded-xl font-bold transition-all duration-300 shadow-sm" style="display:none;">Logout</button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="ml-64 p-6 max-w-7xl mx-auto space-y-6">
+        
+        <!-- Top Hero Section -->
+        <div class="bg-white text-gray-800 p-6 rounded-2xl shadow-sm border border-gray-200">
+            <h1 class="text-2xl font-bold text-gray-800 mb-1">Task Management 🎯</h1>
+            <p class="text-gray-500">Organize your work and stay productive</p>
+        </div>
+
+        <!-- Task Form (Plan Your Focus) -->
+        <div class="bg-white p-6 rounded-2xl shadow-sm border border-gray-200">
+            <h2 class="text-xl font-bold mb-4 text-gray-700">
+                Plan Your Focus
+            </h2>
+
+            <form id="task-form">
+                <div class="flex gap-4">
+                    <input type="text" id="task-title" placeholder="What will you focus on?" required class="flex-grow p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none transition">
+                    <input type="number" id="task-est" placeholder="Mins" required min="1" class="w-32 p-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-400 focus:outline-none text-center transition">
+                    <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-xl shadow-sm hover:bg-blue-700 transition font-semibold">Add Task</button>
+                </div>
+            </form>
+        </div>
+
+        <div class="grid grid-cols-2 gap-6">
+            <!-- Active Tasks Panel -->
+            <div class="space-y-4">
+                <h3 class="text-lg font-semibold text-blue-600 mb-2">
+                    🔵 Active Tasks
+                </h3>
+                <div id="activeTasks" class="space-y-4">
+                    <!-- Active Tasks injected here -->
+                </div>
+            </div>
+
+            <!-- Completed Tasks Panel -->
+            <div class="space-y-4">
+                <h3 class="text-lg font-semibold text-green-600 mb-2">
+                    ✅ Completed Tasks
+                </h3>
+                <div id="completedTasks" class="space-y-4">
+                    <!-- Completed Tasks injected here -->
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="/js/app.js"></script>
+</body>
+</html>
